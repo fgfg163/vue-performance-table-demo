@@ -1,4 +1,4 @@
-# ali-miniapp-webview-html
+# vue-performance-table-demo
 
 ## Project setup
 ```
@@ -20,4 +20,4 @@ npm run build
 npm run lint
 ```
 
-pages: <a src="https://fgfg163.github.io/ali-miniapp-webview-html">https://fgfg163.github.io/ali-miniapp-webview-html</a>
+pages: <a src="https://fgfg163.github.io/vue-performance-table-demo">https://fgfg163.github.io/ali-miniapp-webview-html</a>
