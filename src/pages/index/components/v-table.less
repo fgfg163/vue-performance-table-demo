@@ -1,0 +1,101 @@
+.v-table {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.65);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: relative;
+  clear: both;
+
+  &-body {
+    transition: opacity .3s;
+  }
+
+  &-empty &-body {
+    overflow: auto !important;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+    border-radius: 4px 4px 0 0;
+  }
+
+  &-thead > tr > th {
+    background: #fafafa;
+    transition: background .3s ease;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+    border-bottom: 1px solid #e8e8e8;
+
+    &[colspan] {
+      text-align: center;
+    }
+  }
+
+  &-thead > tr:first-child > th {
+    &:first-child {
+      border-top-left-radius: 4px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 4px;
+    }
+  }
+
+  &-thead > tr:not(:last-child) > th {
+    &[colspan] {
+      border-bottom: 0;
+    }
+  }
+
+  &-tbody > tr > td {
+    border-bottom: 1px solid #e8e8e8;
+    transition: all .3s;
+  }
+
+  &-thead > tr,
+  &-tbody > tr {
+    transition: all .3s;
+    &:hover {
+      & > td {
+        background: #e6f7ff;
+      }
+    }
+  }
+
+  &-thead > tr:hover {
+    background: none;
+  }
+
+  &-footer {
+    padding: 8px 8px;
+    background: #fafafa;
+    border-radius: 0 0 4px 4px;
+    position: relative;
+    border-top: 1px solid #e8e8e8;
+    &:before {
+      content: '';
+      height: 1px;
+      background: #fafafa;
+      position: absolute;
+      top: -1px;
+      width: 100%;
+      left: 0;
+    }
+  }
+
+  &-thead > tr > th,
+  &-tbody > tr > td {
+    padding: 8px 8px;
+    word-break: keep-all;
+  }
+}

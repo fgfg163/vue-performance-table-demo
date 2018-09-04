@@ -10,12 +10,6 @@ module.exports = {
       template: 'src/pages/index/index.html',
       // output as dist/index.html
       filename: 'index.html',
-    },
-    share: {
-      entry: 'src/pages/share/main.js',
-      // title: "main page",
-      template: 'src/pages/share/index.html',
-      filename: 'share.html',
     }
-  }
+  },
 }
