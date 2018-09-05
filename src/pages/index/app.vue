@@ -65,7 +65,7 @@ export default {
         const tableData = []
         await sleep(0)
         for (let key = 0; key < this.rowNum; key++) {
-          tableData.push(Array.from({ length: this.colNum }).map((e, i) => i))
+          tableData.push(Array.from({ length: this.colNum }).map((e, i) => `${key},${i}`))
         }
         setTimeout(() => {
           const t = Date.now() - startTime
@@ -90,7 +90,7 @@ export default {
         this.cmdListPush('start loading')
         const tableData = []
         for (let key = 0; key < this.rowNum; key++) {
-          tableData.push(Array.from({ length: this.colNum }).map((e, i) => i))
+          tableData.push(Array.from({ length: this.colNum }).map((e, i) => `${key},${i}`))
           await sleep(0)
           this.tableData = tableData
         }
