@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
 import VTable from './components/v-table'
 import sleep from '../../utils/sleep-promise'
 
@@ -28,11 +29,29 @@ export default {
       colNum: 100
     }
   },
+  watch: {
+    rowNum () {
+      this.rowNumOnChangeDebounce()
+    },
+    colNum () {
+      this.colNumOnChangeDebounce()
+    }
+  },
   methods: {
     cmdListPush (cmd) {
       this.cmdList.push(cmd)
       this.cmdList = this.cmdList
     },
+    rowNumOnChangeDebounce: localStorage
+      ? debounce(function () {
+        localStorage.setItem('rowNum', this.rowNum)
+      }, 100)
+      : () => false,
+    colNumOnChangeDebounce: localStorage
+      ? debounce(function () {
+        localStorage.setItem('colNum', this.colNum)
+      }, 100)
+      : () => false,
     handleOnLoadSyncClick () {
       (async () => {
         const startTime = Date.now()
@@ -90,6 +109,14 @@ export default {
   },
   components: {
     'v-table': VTable
+  },
+  mounted () {
+    if (localStorage) {
+      const rowNum = localStorage.getItem('rowNum')
+      this.rowNum = rowNum !== undefined && rowNum !== null ? rowNum : this.rowNum
+      const colNum = localStorage.getItem('colNum')
+      this.colNum = colNum !== undefined && colNum !== null ? colNum : this.colNum
+    }
   }
 }
 </script>

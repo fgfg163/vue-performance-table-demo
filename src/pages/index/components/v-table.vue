@@ -32,6 +32,7 @@ export default {
       }
     }
   },
+  watch: {},
   methods: {
     handleOnScroll () {
       let element = this.$refs.thead
