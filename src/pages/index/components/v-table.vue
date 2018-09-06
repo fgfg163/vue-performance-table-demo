@@ -4,47 +4,79 @@
       <table>
         <thead class="v-table-thead" ref="thead">
           <tr>
-            <th :key="-1" v-if="showCol[0] > 0" :colspan="showCol[0]"><span></span></th>
-            <th :key="cellIndex + showRow[0]"
-                v-for="(cell, cellIndex) in (dataSource[0] || []).slice(showRow[0], showRow[1])">
+            <!--<th-->
+            <!--:key="0"-->
+            <!--v-if="showCol[0] > 0"-->
+            <!--:colspan="showCol[0]"-->
+            <!--:style="{width: `${(showCol[0]) * cellWidth}px`}"-->
+            <!--&gt;<span></span></th>-->
+            <!--<th-->
+            <!--:key="cellIndex"-->
+            <!--v-for="(cell, cellIndex) in (dataSource[0] || []).slice(showCol[0], showCol[1])"-->
+            <!--&gt;-->
+            <!--<span>title{{cell}}</span>-->
+            <!--</th>-->
+            <!--<th-->
+            <!--:key="cellIndex + showCol[1]"-->
+            <!--:colspan="(dataSource[0] || []).length - showCol[1]"-->
+            <!--:style="{width: `${((dataSource[0] || []).length - showCol[1]) * cellWidth}px`}"-->
+            <!--&gt;-->
+            <!--<span></span>-->
+            <!--</th>-->
+            <th
+                :key="cellIndex"
+                v-for="(cell, cellIndex) in (dataSource[0] || [])"
+            >
               <span>title{{cell}}</span>
             </th>
-            <th :key="-2" v-if="showCol[1] < (dataSource[0] || []).length" :colspan="showCol[1] - showCol[0]">
-              <span></span></th>
           </tr>
         </thead>
         <tbody class="v-table-tbody" ref="tbody">
           <tr
-            :key="rowKey"
-            v-if="showRow[0] > 0"
-            v-for="(row, rowKey) in dataSource.slice(0, showRow[0])"
+              :key="rowKey"
+              v-if="showRow[0] > 0"
+              v-for="(row, rowKey) in dataSource.slice(0, showRow[0])"
           >
-            <td :key="0" v-if="showRow[0] > 0"><span>{{row[0]}}</span></td>
+            <td :key="0"><span>{{rowKey}},{{rowKey}}</span></td>
+            <td
+                :key="1"
+                :colspan="dataSource.length - 1"
+            ><span>{{rowKey}},{{rowKey}}</span></td>
           </tr>
           <tr
-            :key="rowKey + showRow[0]"
-            v-for="(row, rowKey) in dataSource.slice(showRow[0], showRow[0] + 1)"
+              :key="rowKey + showRow[0]"
+              v-for="(row, rowKey) in dataSource.slice(showRow[0], showRow[0] + 1)"
           >
-            <td :key="0"><span>{{row[0]}}</span></td>
-            <td :key="1"
+            <td :key="0"><span>{{rowKey + showRow[0]}},{{0}}</span></td>
+            <td
+                :key="1"
                 v-if="showCol[0] > 1 && showRow[1] - showRow[0] > 0"
                 :rowspan="showRow[1] - showRow[0]"
-                :colspan="showCol[0]"
-            />
+                :colspan="showCol[0] - 1"
+            ><span>{{rowKey + showRow[0]}},{{1}}</span></td>
             <td
-              :key="cellKey + Math.max(showCol[0], 1)"
-              v-for="(cell, cellKey) in row.slice(Math.max(showCol[0], 1), showCol[1])"
+                :key="cellKey + Math.max(showCol[0], 1)"
+                v-for="(cell, cellKey) in row.slice(Math.max(showCol[0], 1), showCol[1])"
             >
-              <span>{{cell}}</span>
+              <span>{{rowKey + showRow[0]}},{{cellKey + Math.max(showCol[0], 1)}}</span>
             </td>
           </tr>
           <tr :key="rowKey + showRow[0] + 1" v-for="(row, rowKey) in dataSource.slice(showRow[0] + 1, showRow[1])">
-            <td :key="-1"><span>{{row[0]}}</span></td>
-            <td :key="cellKey + showCol[0]" v-for="(cell, cellKey) in row.slice(showCol[0], showCol[1])">
-              <span>{{cell}}</span></td>
+            <td :key="0"><span>{{rowKey + showRow[0] + 1}},{{0}}</span></td>
+            <td
+                :key="cellKey + Math.max(showCol[0] - 1, 1)"
+                v-for="(cell, cellKey) in row.slice(Math.max(showCol[0] - 1, 1), showCol[1])"
+            >
+              <span>{{rowKey + showRow[0] + 1}},{{cellKey + Math.max(showCol[0] - 1, 1)}}</span>
+            </td>
           </tr>
-          <tr :key="rowKey + showRow[1]" v-for="(row, rowKey) in dataSource.slice(showRow[1])">
-            <td :key="-1"><span>{{row[0]}}</span></td>
+          <tr :key="rowKey + showRow[1]">
+            <td
+                :key="0"
+                :rowspan="dataSource.length - showRow[1]"
+                :colspan="(dataSource[0] || []).length - 1"
+                :style="{height: `${(dataSource.length - showRow[1]) * cellHeight}px`, width: `${((dataSource[0] || []).length - 1) * cellWidth}px`}"
+            ><span>{{rowKey + showRow[1]}},{{0}}</span></td>
           </tr>
         </tbody>
       </table>
@@ -63,7 +95,9 @@ export default {
     return {
       tableWrapperHeight: 0,
       showRow: [0, 0],
-      showCol: [0, 0]
+      showCol: [0, 0],
+      cellHeight: 0,
+      cellWidth: 0
     }
   },
   props: {
@@ -95,16 +129,19 @@ export default {
     async handleTableShowAreaChange () {
       await sleep(0)
       const wrapperJQ = $(this.$refs.wrapper)
-      const vTableJQ = $(this.$refs.vTable)
       const theadJQ = $(this.$refs.thead)
       await sleep(0)
-      const firstCellJQ = $(this.$refs.tbody.querySelector('tr:first-of-type > td:first-of-type'))
-      const vTableWidth = vTableJQ.width()
-      const vTableHeight = vTableJQ.height()
-      const theadHeight = theadJQ.height()
+      const firstCellJQ = $(this.$refs.tbody.querySelector('tr td:not([rolspan]):not([colspan])'))
+      if (!firstCellJQ.length) {
+        return
+      }
       const cellWidth = firstCellJQ.outerWidth()
       const cellHeight = firstCellJQ.outerHeight()
       console.log(cellWidth, cellHeight)
+      this.cellWidth = cellWidth
+      this.cellHeight = cellHeight
+
+      const theadHeight = theadJQ.height()
       const wrapperScrollTop = wrapperJQ.scrollTop()
       const wrapperScrollLeft = wrapperJQ.scrollLeft()
 
@@ -147,7 +184,11 @@ export default {
 
 .v-table {
   display: inline-block;
-
+  tr > th,
+  tr > td {
+    padding: 0;
+    margin: 0;
+  }
   tr > th > span,
   tr > td > span {
     line-height: 32px;
